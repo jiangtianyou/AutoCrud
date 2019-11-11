@@ -2,7 +2,7 @@
  * 字段对象类
  */
 var util = require('util');
-module.exports = function (filedName, filedType,required) {
+module.exports = function (filedName, filedType, required) {
     this.filedName = filedName;
     this.filedType = filedType;
     this.required = required;
@@ -15,13 +15,19 @@ module.exports = function (filedName, filedType,required) {
     this.isList = function () {
         return this.filedType === 'List';
     };
-    this.setRequired = function (required) {
-        this.required = required;
+    this.isInteger = function () {
+        return this.filedType === 'Integer';
     };
     this.unknownType = function () {
-        return this.filedType !== 'String' && this.filedType !== 'Date' && this.filedType !== 'List' ;
+        return this.filedType !== 'String'
+            && this.filedType !== 'Date'
+            && this.filedType !== 'List'
+            && this.filedType !== 'Integer';
     };
     this.genApiParam = function () {
-        return util.format('@RequestParam(value = "%s",require=false) String %s', filedName, filedName);
+        let requireInfo = !this.required ? ',require = false' : '', //空即require = true
+            validateInfo = isString() && this.required ? '@NotBlank' : '';
+        return util.format('@RequestParam(value = "%s" %s) %s %s %s',
+            filedName, requireInfo, validateInfo, filedType, filedName);
     }
 };
