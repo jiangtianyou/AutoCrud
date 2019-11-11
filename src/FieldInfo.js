@@ -5,7 +5,7 @@ var util = require('util');
 module.exports = function (filedName, filedType, required) {
     this.filedName = filedName;
     this.filedType = filedType;
-    this.required = required;
+    this.required = filedName === 'id' ? true : required;
     this.isString = function () {
         return this.filedType === 'String';
     };
