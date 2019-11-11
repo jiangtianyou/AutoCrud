@@ -13,20 +13,20 @@ module.exports = function (filedName, filedType, required) {
         return this.filedType === 'Date';
     };
     this.isList = function () {
-        return this.filedType === 'List';
+        return this.filedType.indexOf('List') !== -1;
     };
     this.isInteger = function () {
         return this.filedType === 'Integer';
     };
     this.unknownType = function () {
-        return this.filedType !== 'String'
-            && this.filedType !== 'Date'
-            && this.filedType !== 'List'
-            && this.filedType !== 'Integer';
+        return !this.isString()
+            && !this.isDate()
+            && !this.isList()
+            && !this.isInteger();
     };
     this.genApiParam = function () {
         let requireInfo = !this.required ? ',require = false' : '', //空即require = true
-            validateInfo = isString() && this.required ? '@NotBlank' : '';
+            validateInfo = this.isString() && this.required ? '@NotBlank' : '';
         return util.format('@RequestParam(value = "%s" %s) %s %s %s',
             filedName, requireInfo, validateInfo, filedType, filedName);
     }

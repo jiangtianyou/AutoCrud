@@ -36,13 +36,13 @@ module.exports = function parseFile() {
                 let fieldType = result[1],
                     fieldName = result[2],
                     required = false;
-                if (fieldType.indexOf('List') !== -1) {
-                    fieldType = 'List'; // 例如类型List<xxx> 统一简化成List
-                }
                 if (requiredFields.indexOf(fieldName) !== -1) {
                     required = true;
                 }
-                resultArr.push(new FieldInfo(fieldName, fieldType, required));
+                let fieldInfo = new FieldInfo(fieldName, fieldType, required);
+                let s = fieldInfo.genApiParam();
+                console.log(s);
+                resultArr.push(fieldInfo);
             }
         } while (result);
     });
