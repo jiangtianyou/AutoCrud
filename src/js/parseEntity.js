@@ -1,8 +1,8 @@
 /**
  * 解析javabean输出为Array[FieldInfo]对象
  */
-let fs = require("fs");
-let FieldInfo = require("./FieldInfo");
+let {readFileSync} = require("fs");
+let FieldInfo = require("../bean/FieldInfo");
 /**
 * 必填字段
 */
@@ -19,14 +19,13 @@ function getRequiredFields(text){
     return result;
 }
 
-
-module.exports = function parseFile() {
-    let resultArr = [];
-    fs.readFile('./src/Topic.java', 'utf8', (err, data) => {
-        if (err) {
-            console.log("读取文件处出错");
+module.exports = {
+    getFieldsInfo:function (text) {
+        if (!text) {
+            console.log("文件内容不能为空");
+            process.exit();
         }
-        let text = data,
+        let resultArr = [],
             requiredFields = getRequiredFields(text),
             reg = /private ([\w<>]+) (\w+)/g;
         let result;
@@ -41,13 +40,22 @@ module.exports = function parseFile() {
                 }
                 let fieldInfo = new FieldInfo(fieldName, fieldType, required);
                 let s = fieldInfo.genApiParam();
-                console.log(s);
                 resultArr.push(fieldInfo);
             }
         } while (result);
-    });
 
-    return resultArr;
+        return resultArr;
+    },
+    getClassName: function(text) {
+        let reg = /class\s(\w+)\s{/;
+        let result = reg.exec(text);
+        if (result) {
+            return result[1];
+        }
+        return 'UnknownClass';
+    },
+
 };
+
 
 

@@ -1,7 +1,7 @@
 /**
  * 字段对象类
  */
-var util = require('util');
+let util = require('util');
 module.exports = function (filedName, filedType, required) {
     this.filedName = filedName;
     this.filedType = filedType;
