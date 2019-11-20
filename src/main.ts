@@ -1,10 +1,7 @@
 #!/usr/bin/env node
 
-import * as handleFile from './scripts/parseBean';
-import * as os from 'os';
+import * as os from "os";
 import * as fs from "fs";
-import * as postman from "./scripts/postman";
-import Config from './model/Config';
 
 // 1、检验输入文件并获取路径
 
@@ -27,13 +24,7 @@ program.version('1.1.7')
     checkEnv();
     if (bean == 'setenv') {
       console.log('正在配置环境变量')
-      postman.configEnv();
     }
-    let fullPath = handleFile.parse(bean);
-    let apiText = handleFile.readFileToText(fullPath);
-    let apiEntities = handleFile.parseMethod(apiText);
-    console.log('解析出的数据-->', apiEntities);
-    postman.createCollection(apiEntities)
     console.log('生成完成请在postman中查看！')
 
   })
@@ -56,9 +47,6 @@ function checkEnv() :boolean {
       process.exit();
     }else{
       // 写入到配置文件
-      Config.key = config.key;
-      Config.host = config.host;
-      Config.siteId = config.siteId;
     }
   }else {
     //  创建默认配置
