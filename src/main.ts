@@ -1,0 +1,94 @@
+#!/usr/bin/env node
+
+import * as handleFile from './scripts/parseBean';
+import * as os from 'os';
+import * as fs from "fs";
+import * as postman from "./scripts/postman";
+import Config from './model/Config';
+
+// 1、检验输入文件并获取路径
+
+const exit = process.exit,
+  program = require('commander');
+
+program.version('1.1.7')
+  .arguments('<bean> [env]')
+  .description('生成bean对应的api')
+  .action(function(bean) {
+    if (bean === 'config') {
+      //打开配置文件进行配置
+      openConfig();
+      process.exit();
+    }
+    if (!bean) {
+      console.log('命令不正确');
+      process.exit();
+    }
+    checkEnv();
+    if (bean == 'setenv') {
+      console.log('正在配置环境变量')
+      postman.configEnv();
+    }
+    let fullPath = handleFile.parse(bean);
+    let apiText = handleFile.readFileToText(fullPath);
+    let apiEntities = handleFile.parseMethod(apiText);
+    console.log('解析出的数据-->', apiEntities);
+    postman.createCollection(apiEntities)
+    console.log('生成完成请在postman中查看！')
+
+  })
+program.parse(process.argv);
+
+/**
+ * 检查配置是否正确
+ */
+function checkEnv() :boolean {
+  let configFile = os.homedir()+'/apiconfig.json';
+  if (fs.existsSync(configFile)) {
+    let text = fs.readFileSync(configFile, 'utf-8');
+    if (!text) {
+      console.log('请先调用命令 api config 进行配置key');
+      process.exit();
+    }
+    let config = JSON.parse(text);
+    if (!config.key || config.key.length<15 || !config.host) {
+      console.log('配置不正确')
+      process.exit();
+    }else{
+      // 写入到配置文件
+      Config.key = config.key;
+      Config.host = config.host;
+      Config.siteId = config.siteId;
+    }
+  }else {
+    //  创建默认配置
+    fs.writeFileSync(configFile, JSON.stringify(getDefaultConfig(),null,2), 'utf-8');
+
+    console.log('请先调用命令 api config 进行配置key')
+  }
+  return false;
+}
+
+
+function openConfig() :void {
+  let configFile = os.homedir()+'\\apiconfig.json';
+  console.log('请先打开文件' + configFile + '完成配置');
+  if (!fs.existsSync(configFile)) {
+    createDefaultConfig();
+  }
+}
+
+
+function createDefaultConfig() :void{
+  let configFile = os.homedir()+'/apiconfig.json';
+  let data = getDefaultConfig();
+  fs.writeFileSync(configFile,JSON.stringify(data,null,2),'utf-8')
+}
+function getDefaultConfig(){
+  let data  = {
+    key:'you-postman-key',
+    siteId:'28',
+    host:'http://192.168.201.70:8084/media-basic-community',
+  }
+  return data;
+}
