@@ -8,8 +8,8 @@
     "api"
   ],
   "scripts": {
-    "pub": "git add -A && git commit -m modify  && npm publish",
     "push": "git add -A && git commit -m modify && git push -u origin master",
+    "pub": "npm publish & git add -A && git commit -m modify && npm run push",
     "update-ignore": "git rm -r --cached . && git add .",
     "clean": "rimraf coverage build tmp",
     "build": "tsc -p tsconfig.json",
