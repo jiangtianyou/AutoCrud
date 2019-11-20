@@ -8,7 +8,7 @@
     "api"
   ],
   "scripts": {
-    "push": "git add -A && git commit -m modify && git push -u origin master",
+    "push": "git add -A && git commit -m change && git push -u origin master",
     "pub": "npm publish & git add -A && git commit -m modify && npm run push",
     "update-ignore": "git rm -r --cached . && git add .",
     "clean": "rimraf coverage build tmp",
