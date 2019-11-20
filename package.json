@@ -1,8 +1,8 @@
 {
   "name": "@jiangtianyou/autocrud",
   "version": "1.0.0",
-  "description": "auto generate api for postman from java controller file",
-  "homepage": "https://github.com/jiangtianyou/AutoApi",
+  "description": "Command line tools to generate common crud code",
+  "homepage": "https://github.com/jiangtianyou/AutoCrud",
   "keywords": [
     "postman",
     "api"
