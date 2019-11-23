@@ -16,6 +16,10 @@ export function match(reg: RegExp,text: string): string[] {
     if (result && result[1]) {
       rtn.push(result[1]);
     }
+    if (reg.flags.indexOf('g') === -1) {
+      // 非g模式正则的lastIndex会永远在0 会进入死循环 所以应该只执行一次推出
+      break;
+    }
   } while (result);
   return rtn;
 }
